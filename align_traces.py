@@ -71,7 +71,13 @@ and a dictionary mapping plate positions to desired sequences.
 Prints pairwise alignments of traces with desired seqs.
 '''
 def align_traces(traces,sequences):
-	# TBD
+	for trace_name in traces.keys():
+		plate_position = trace_name.split('-')[0]
+		trace_seq = traces[trace_name]
+		desired_seq = sequences[plate_position]
+		best_alignment = pw2.align.globalms(trace_seq,desired_seq,2,-1,-10,-5)[0]
+		print pw2.format_alignment(*best_alignment)
+		print plate_position, trace_name, desired_seq, trace_seq
 	return
 
 if __name__ == '__main__':
@@ -79,4 +85,4 @@ if __name__ == '__main__':
     spacers = get_spacers(sys.argv[2])
     mapping = map_to_plate('row',96)
     mapped_spacers = dict(zip(mapping,spacers))
-    print mapped_spacers
+    align_traces(traces,mapped_spacers)
